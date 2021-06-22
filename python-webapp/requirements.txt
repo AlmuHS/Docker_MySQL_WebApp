@@ -1,4 +1,4 @@
 flask
 wtforms
 flask_wtf
-flaskext
+flask-mysql
