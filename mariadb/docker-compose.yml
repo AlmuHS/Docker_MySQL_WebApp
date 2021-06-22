@@ -1,0 +1,14 @@
+mariadb:
+    image: mariadb:10.2
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testusr
+      MYSQL_PASSWORD: test
+    logging:
+      driver: syslog
+      options:
+        tag: "{{.DaemonName}}(image={{.ImageName}};name={{.Name}};id={{.ID}})"
+    restart: on-failure
+    volumes:
+     - ${PWD}/mariadb:/var/lib/mysql
