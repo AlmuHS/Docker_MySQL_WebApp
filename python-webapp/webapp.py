@@ -1,22 +1,21 @@
 from flask import Flask, render_template, redirect
 from flask_wtf import FlaskForm
-from flaskext.mysql import MySQL
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+
+import mysql.connector 
 
 SECRET_KEY='5f352379324c22463451387a0aec5d2f'
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
-#mydb = MySQL(app, prefix="mydb", host="maria", user='testusr', password='test', db='testDB')
-app.config['MYSQL_HOST'] = '172.17.0.2'
-app.config['MYSQL_USER'] = 'testusr'
-app.config['MYSQL_PASSWORD'] = 'test'
-app.config['MYSQL_DB'] = 'testDB'
-
-mydb = MySQL()
-mydb.init_app(app)
+mydb = mysql.connector.connect(
+  host="172.17.0.2",
+  user="testusr",
+  password="test",
+  database="testDB"
+)
 
 class QueryForm(FlaskForm):
     username = StringField('Nombre de Usuario', validators=[DataRequired()])
@@ -35,7 +34,7 @@ def add_headers(cursor):
 @app.route("/", methods=['GET', 'POST'])
 def main():
         form = QueryForm()
-        cursor = mydb.get_db().cursor()
+        cursor = mydb.cursor()
         
         if form.submit_buy.data:
                 if form.validate_on_submit():
