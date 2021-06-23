@@ -9,7 +9,14 @@ SECRET_KEY='5f352379324c22463451387a0aec5d2f'
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
-mydb = MySQL(app, prefix="mydb", host='127.0.0.1', user='testusr', password='test', db='testdb') 
+#mydb = MySQL(app, prefix="mydb", host="maria", user='testusr', password='test', db='testDB')
+app.config['MYSQL_HOST'] = '172.17.0.2'
+app.config['MYSQL_USER'] = 'testusr'
+app.config['MYSQL_PASSWORD'] = 'test'
+app.config['MYSQL_DB'] = 'testDB'
+
+mydb = MySQL()
+mydb.init_app(app)
 
 class QueryForm(FlaskForm):
     username = StringField('Nombre de Usuario', validators=[DataRequired()])
@@ -55,5 +62,5 @@ def main():
         
 if __name__ == "__main__":
         #app.run(host='0.0.0.0', port=80)
-        app.run(host='localhost', port=5002)
+        app.run(host='0.0.0.0', port=5000)
 
