@@ -4,6 +4,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 import mysql.connector 
+import os
 
 SECRET_KEY='5f352379324c22463451387a0aec5d2f'
 
@@ -11,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
 mydb = mysql.connector.connect(
-  host="172.17.0.2",
+  host=os.environ['MYSQL_HOST'],
   user="testusr",
   password="test",
   database="testDB"
