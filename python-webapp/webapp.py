@@ -74,12 +74,17 @@ def main():
         elif form.submit_newuser.data:
             return render_template("register.html", form=form_register)
             
-        elif form_register.submit_register.data and form.validate_on_submit():
-            request = f"INSERT INTO CLIENTES(usuario, nombre, apellidos, email, direccion, ciudad) \
-                VALUES('{form_register.username.data}', '{form_register.name.data}' , '{form_register.surname.data}' , '{form_register.email.data}', \
-                '{form_register.address.data}', '{form_register.city.data}')"
+        elif form_register.submit_register.data and form_register.validate_on_submit():
+            try:
+                request = f"INSERT INTO CLIENTES(usuario, nombre, apellidos, email, direccion, ciudad) \
+                    VALUES('{form_register.username.data}', '{form_register.name.data}' , '{form_register.surname.data}' , '{form_register.email.data}', \
+                    '{form_register.address.data}', '{form_register.city.data}')"
+                    
+                cursor.execute(request)
+            except mysql.connector.Error as err:
+                error_message = err.msg
                 
-            cursor.execute(request)
+                return render_template("error.html", data=error_message)
         
         return render_template('query.html', title='Consulta compras', form=form)
         
