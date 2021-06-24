@@ -1,0 +1,27 @@
+version: '3.3'
+services:
+        database:
+                image: almuhs/mariadb-compras:v1
+                container_name: maria
+                read_only: false
+                volumes:
+                        - mariadb-vol:/var/lib/mysql
+                networks:
+                        - mynet
+        webapp:
+                image: almuhs/flask-mysql-compras:v2
+                container_name: webapp
+                ports:
+                        - "127.0.0.1:8080:5000"
+                environment:
+                        - MYSQL_HOST=maria
+                networks:
+                        - mynet
+                depends_on:
+                        - database
+volumes:
+        mariadb-vol:
+                external: false
+networks:
+        mynet:
+                driver: bridge
