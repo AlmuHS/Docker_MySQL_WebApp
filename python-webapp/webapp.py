@@ -11,13 +11,6 @@ SECRET_KEY='5f352379324c22463451387a0aec5d2f'
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
-mydb = mysql.connector.connect(
-  host=os.environ['MYSQL_HOST'],
-  user="testusr",
-  password="test",
-  database="testDB"
-)
-
 class QueryForm(FlaskForm):
     username = StringField('Nombre de Usuario', validators=[DataRequired()])
     submit_buy = SubmitField('Consultar compras')
@@ -47,6 +40,17 @@ def add_headers(cursor):
 def main():
         form = QueryForm()
         form_register = RegisterForm()
+        
+        try:
+            mydb = mysql.connector.connect(
+              host=os.environ['MYSQL_HOST'],
+              user="testusr",
+              password="test",
+              database="testDB"
+            )
+        except mysql.connector.Error as err:
+                error_message = err.msg
+                return render_template("error.html", data=error_message)
         
         cursor = mydb.cursor()
         
