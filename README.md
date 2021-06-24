@@ -91,8 +91,35 @@ Una vez con las imágenes y la red ya preparada, desplegamos los contenedores ut
 
 ##### Despliegue de la aplicación web
 
-La aplicación web recibe el nombre del contenedor de la base de datos mediante la variable de entorno `MYSQL_HOST`  
+La aplicación web recibe el nombre del contenedor de la base de datos mediante la variable de entorno `MYSQL_HOST`. 
+
+A su vez, el parámetro `-p` permite establecer una redirección entre los puertos del contenedor y del sistema anfitrión. En este caso, redireccionaremos el puerto 5000 (utilizado en la aplicación web) al puerto 8080 del sistema anfitrión. Con esto podremos abrir la página web desde el puerto 8000 de localhost.
   
-  	sudo docker run --name webapp -e MYSQL_HOST="maria" -d -p 5000:80 --network mynet flask-mariadb
+	sudo docker run --name webapp -e MYSQL_HOST="maria" -d -p 127.0.0.1:8080:5000 --network mynet flask-mariadb
+
+### Prueba del entorno
+
+Para probar el entorno, abrimos el navegador e indicamos la siguiente URL
+
+http://localhost:8080
+
+Si todo ha ido bien, veremos algo como esto:
+
+![](docs/webapp_principal.png)
+
+La aplicación web muestra las compras realizadas por el usuario indicado en el cuadro "Nombre de usuario"-
+Para saber la lista de usuarios, pulsamos el botón "Consultar usuarios", que nos mostrará algo como esto:
+
+![](docs/lista_usuarios.png)
+
+Volvemos a la página principal pulsando el botón "Atrás" del navegador y, en el cuadro de texto, introducimos el "usuario" que queremos consultar.
+
+![](docs/introduce_usuario.png)
+
+Pulsamos en "Consultar compras"
+
+![](docs/consulta_compras.png)
+
+Dependiendo del usuario que hayamos elegido, veremos una lista de compras u otra.
 
 
