@@ -274,7 +274,27 @@ Comprobamos que la base de datos se ha creado correctamente
 Repetimos el mismo proceso con la imagen de la aplicación web
 
 	sudo docker run -d -e MYSQL_HOST="maria" --name webapp -p 127.0.0.1:8080:5000 almuhs/flask-mysql-compras:v1 --network mynet
+
+Veremos algo similar a lo anterior
+
+	Unable to find image 'almuhs/flask-mysql-compras:v1' locally
+	v1: Pulling from almuhs/flask-mysql-compras
+	69692152171a: Pull complete 
+	59773387c0e7: Pull complete 
+	3fc84e535e87: Pull complete 
+	68ebeebdab6f: Pull complete 
+	3d3af2ef8baa: Pull complete 
+	2033dee0f01c: Pull complete 
+	364eecd0d134: Pull complete 
+	1d6fa5c1d27f: Pull complete 
+	9c319a9f508f: Pull complete 
+	Digest: sha256:550669eb22e369b0b2d8a153f630173a8683ddd0efae1c69855d51b9490c8e92
+	Status: Downloaded newer image for almuhs/flask-mysql-compras:v1
+	d47b8096494c952455bab936a97f13817c4f55cb93cf191f8641e2cb041baed0
 	
+
+#### Comprobando su funcionamiento
+
 Entramos en la URL http://localhost:8080
 
 ![](docs/interfaz_web_2.png)
