@@ -85,6 +85,7 @@ def main():
                     '{form_register.address.data}', '{form_register.city.data}')"
                     
                 cursor.execute(request)
+                mydb.commit()
             except mysql.connector.Error as err:
                 error_message = err.msg
                 
