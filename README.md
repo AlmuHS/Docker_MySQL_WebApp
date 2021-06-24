@@ -122,4 +122,95 @@ Pulsamos en "Consultar compras"
 
 Dependiendo del usuario que hayamos elegido, veremos una lista de compras u otra.
 
+## 4. Publicación de las imágenes
+
+Para subir las imágenes, nos creamos una cuenta en [Docker Hub](https://hub.docker.com/).
+En mi caso, la cuenta es "almuhs".
+
+### Publicación de la aplicación web
+
+#### Empaquetado del contenedor
+
+Para empaquetar el contenedor utilizamos el comando `docker commit`. En este indicamos el nombre del contenedor (debe estar en ejecución) y la imagen de partida
+
+	sudo docker commit -p webapp python:3.9-slim
+
+Esto nos empaquetará la aplicación web con el nombre `webapp`.
+
+#### Inicio de sesión en Docker Hub
+
+Iniciamos sesión con el comando `docker login`
+
+	sudo docker login
+
+Nos preguntará sobre nuestro usuario y contraseña. Introducimos los mismos que utilizamos al registrarnos en Docker Hub, y pulsamos Enter para iniciar sesión
+
+Si todo ha ido bien, veremos el mensaje
+
+	Login Succeeded
+
+#### Etiquetado de la imagen
+
+Etiquetamos las imágenes con los nombres con los que lo subiremos a la plataforma. Esta se compondrá de nuestro nombre de usuario, el nombre de la imagen, y la versión. También debemos indicar la imagen original en que se basa.
+
+	sudo docker tag python:3.9-slim almuhs/flask-mysql-compras:v1
+
+#### Subida de la imagen al servidor
+
+Finalmente, subimos la imagen con el comando `docker push`
+
+	sudo docker push almuhs/flask-mysql-compras:v1
+
+Veremos una salida similar a esta  
+  
+	The push refers to repository [docker.io/almuhs/flask-mysql-compras]
+	b9ae38c31d9a: Pushed 
+	64520d999c8d: Pushed 
+	59c39f155b6c: Pushed 
+	86bec3e1156b: Pushed 
+	297b05241274: Mounted from library/python 
+	677735e8b7e0: Mounted from library/python 
+	0315c2e53dfa: Mounted from library/python 
+	98a85d041f35: Mounted from library/python 
+	02c055ef67f5: Mounted from library/python 
+	v1: digest: sha256:550669eb22e369b0b2d8a153f630173a8683ddd0efae1c69855d51b9490c8e92 size: 2206
+
+Tras esto, la imagen se publicará en Docker Hub, con el nombre [almuhs/flask-mysql-compras](https://hub.docker.com/repository/docker/almuhs/flask-mysql-compras)
+
+### Publicación de la base de datos
+
+#### Empaquetado del contenedor
+
+	sudo docker commit -p maria mariadb:latest
+
+Esto nos empaquetará la base de datos con el nombre `maria`
+
+#### Etiquetado del contenedor
+
+**Con la sesión iniciada**, repetimos el proceso realizado con la aplicación web
+
+	sudo docker tag mariadb:latest almuhs/mariadb-compras:v1
+
+#### Subida de la imagen
+
+	sudo docker push almuhs/mariadb-compras:v1
+
+Vemos una salida como esta:
+
+	The push refers to repository [docker.io/almuhs/mariadb-compras]
+	d20fade06df0: Pushed 
+	773609125c54: Pushed 
+	440e3f91cc04: Mounted from library/mariadb 
+	d9a849974686: Mounted from library/mariadb 
+	f41b3e14204a: Mounted from library/mariadb 
+	9f40bb8c365a: Mounted from library/mariadb 
+	a29b933b2607: Mounted from library/mariadb 
+	cb8ffd04f82a: Mounted from library/mariadb 
+	b56be19e2b18: Mounted from library/mariadb 
+	fac86ed223e8: Mounted from library/mariadb 
+	94478388a6f0: Mounted from library/mariadb 
+	feef05f055c9: Mounted from library/mariadb 
+	v1: digest: sha256:75dfaf8f7cecbf5276a0859fd5d31467a765184935be87a5a80a2cf052802d6c size: 2827
+
+La imagen queda publicada en Docker Hub, con el nombre [almuhs/mariadb-compras](https://hub.docker.com/repository/docker/almuhs/mariadb-compras)
 
