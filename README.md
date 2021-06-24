@@ -105,7 +105,7 @@ http://localhost:8080
 
 Si todo ha ido bien, veremos algo como esto:
 
-![](docs/webapp_principal.png)
+![](docs/interfaz_web_2.png)
 
 La aplicación web muestra las compras realizadas por el usuario indicado en el cuadro "Nombre de usuario"-
 Para saber la lista de usuarios, pulsamos el botón "Consultar usuarios", que nos mostrará algo como esto:
@@ -301,3 +301,103 @@ Entramos en la URL http://localhost:8080
 
 Vemos que la página web carga correctamente
 
+## 6. Desplegando los servicios mediante Docker Compose
+
+La ejecución manual de los contenedores es bastante tediosa. Por tanto, para facilitar el proceso, utilizaremos Docker Compose para descargar y lanzar los contenedores con toda la configuración necesaria para que funcionen correctamente.
+
+Además, crearemos un volumen para la base de datos, con el fín de que sus datos puedan persistir una vez finalice la ejecución del contenedor
+
+### Creando el fichero de configuración
+
+Creamos un fichero llamado [*docker-compose.yml*](https://github.com/AlmuHS/Practica_Docker_MySQL/blob/main/docker-compose.yml), en el cual indicaremos la infraestructura a desplegar.
+
+La infraestructura se compone de dos servicios:
+
+- **database:** servicio correspondiente a la base de datos, basado en la imagen [almuhs/mariadb-compras:v1](https://hub.docker.com/repository/docker/almuhs/mariadb-compras). Hace uso del volumen persistente *mariadb-vol*. Despliega un contenedor llamado *maria*
+
+- **webapp**: servicio correspondiente a la aplicación web, basado en la imagen [almuhs/flask-mysql-compras](https://hub.docker.com/repository/docker/almuhs/flask-mysql-compras) .Dependiente del servicio *database*. Despliega un contenedor llamado *webapp*
+
+Además, la infraestructura cuenta con el volumen persistente *mariadb-vol*, conectado al directorio `/var/lib/mysql` de *database*; y una red llamada *mynet*, a la que se conectan ambos servicios.
+
+### Arrancando los servicios
+
+Una vez creado el fichero *docker-compose.yml*, arrancamos los servicios ejecutando el comando `docker-compose up` desde el mismo directorio donde se ubica el fichero.
+
+	sudo docker-compose up -d
+
+Veremos una salida similar a esta:  
+
+	Creating volume "tarea6_mariadb-vol" with default driver
+	Creating maria ... done
+	Creating webapp ... done
+
+Accedemos a la página para comprobar que todo ha ido correctamente.
+
+![](docs/interfaz_web_2.png)
+
+### Probando el volumen persistente
+
+Para probar el volumen persistente, registraremos un nuevo usuario en la aplicación, y comprobaremos si, tras reiniciar el contenedor de la base de datos, los datos del mismo se mantienen.
+
+#### Comprobando lista de usuarios
+
+Comprobamos la lista de usuarios, para ver los usuarios registrados en el sistema
+
+![](docs/lista_usuarios.png)
+
+#### Registrando usuarios
+
+Rellenamos el formulario con los datos del usuario, y pulsamos "Registrar usuario"
+
+![](docs/registro_de_usuario.png)
+
+Comprobamos que el usuario aparece en la lista de usuarios
+
+![](docs/nuevo_usuario_registrado.png)
+
+#### Reiniciando la base de datos
+
+Reiniciamos el contenedor de la base de datos, usando el comando
+
+	sudo docker rm -vf maria
+	sudo docker-compose up -d
+
+#### Comprobando los datos
+
+Volvemos a consultar la lista de usuarios, para comprobar que el usuario se mantiene
+
+![](docs/comprueba_usuario_persistente.png)
+
+Vemos que el usuario se mantiene en la base de datos
+
+#### Desactivando el volumen 
+
+Para terminar la comprobación, reiniciamos el contenedor de la base de datos sin conectarlo al volumen. Para ello, editamos el fichero `docker-compose.yml`, comentando la sección correspondiente al volumen.
+
+Y repetimos el proceso anterior
+
+	sudo docker rm -vf maria
+	sudo docker-compose up -d
+
+![](docs/lista_usuario_no_persistente.png)
+
+Vemos que volvemos a la lista de usuarios original
+
+##### Volviendo a registrar el usuario
+
+Repetimos el proceso anterior
+
+![](docs/registro_de_usuario.png)
+
+![](docs/nuevo_usuario_registrado.png)
+
+Vemos que el nuevo usuario se ha registrado
+
+##### Reiniciando de nuevo el contenedor y comprobando
+
+Si repetimos el proceso y comprobamos, vemos que el usuario habrá desaparecido
+
+	sudo docker rm -vf maria
+	sudo docker-compose up -d
+	
+![](docs/lista_usuario_no_persistente.png)
