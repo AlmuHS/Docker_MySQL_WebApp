@@ -214,3 +214,70 @@ Vemos una salida como esta:
 
 La imagen queda publicada en Docker Hub, con el nombre [almuhs/mariadb-compras](https://hub.docker.com/repository/docker/almuhs/mariadb-compras)
 
+## 5. Prueba de las imágenes publicadas
+
+Para probar las imágenes publicadas, podemos indicar el nombre de la imagen dentro del comando `docker run`. Esto descargará las imágenes y lanzará los contenedores con la configuración correspondiente
+
+### Probando la imagen de la base de datos
+
+Ejecutamos el comando
+
+	sudo docker run -d --name maria --network mynet almuhs/mariadb-compras:v1
+
+Veremos una salida similar a esta:
+
+	Unable to find image 'almuhs/mariadb-compras:v1' locally
+	v1: Pulling from almuhs/mariadb-compras
+	c549ccf8d472: Pull complete 
+	26ea6552a462: Pull complete 
+	329b1f41043f: Pull complete 
+	9f8d09317d80: Pull complete 
+	2bc055a5511d: Pull complete 
+	e989e430508e: Pull complete 
+	201c98fa16f6: Pull complete 
+	cc09fec0bce1: Pull complete 
+	1c9b9043bdda: Pull complete 
+	f0e596ee38c5: Pull complete 
+	2841ecf560b8: Pull complete 
+	a204d876b517: Pull complete 
+	Digest: sha256:75dfaf8f7cecbf5276a0859fd5d31467a765184935be87a5a80a2cf052802d6c
+	Status: Downloaded newer image for almuhs/mariadb-compras:v1
+	4eb36059b7bf2ec03065d70ae4ef30f6cc040b6b1ee849a782fff8568f334638
+
+#### Comprobando su funcionamiento
+
+Comprobamos que la base de datos se ha creado correctamente
+
+	almu@debian:~/Practicas_CC/Tarea6/python-webapp$ sudo docker exec -it maria mysql -utestusr -p
+	Enter password: 
+	Welcome to the MariaDB monitor.  Commands end with ; or \g.
+	Your MariaDB connection id is 3
+	Server version: 10.5.10-MariaDB-1:10.5.10+maria~focal mariadb.org binary distribution
+	
+	Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+	
+	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+	
+	MariaDB [(none)]> show databases;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| testDB             |
+	+--------------------+
+	2 rows in set (0.001 sec)
+	
+	MariaDB [(none)]> 
+
+### Probando la imagen de la aplicación web
+
+Repetimos el mismo proceso con la imagen de la aplicación web
+
+	sudo docker run -d -e MYSQL_HOST="maria" --name webapp -p 127.0.0.1:8080:5000 almuhs/flask-mysql-compras:v1 --network mynet
+	
+Entramos en la URL http://localhost:8080
+
+![](docs/interfaz_web_2.png)
+
+Vemos que la página web carga correctamente
+
