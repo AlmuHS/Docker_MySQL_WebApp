@@ -22,6 +22,15 @@ class QueryForm(FlaskForm):
     username = StringField('Nombre de Usuario', validators=[DataRequired()])
     submit_buy = SubmitField('Consultar compras')
     submit_user = SubmitField('Consultar usuarios')
+    submit_newuser = SubmitField('Registrar nuevo usuario')
+
+class RegisterForm(FlaskForm):
+    username = StringField('Nombre de Usuario', validators=[DataRequired()])
+    name = StringField('Nombre', validators=[DataRequired()])
+    surname = StringField('Apellidos', validators=[DataRequired()])
+    email = StringField('Correo electronico', validators=[DataRequired()])
+    
+    submit_register = SubmitField('Registrar usuario')
 
 def add_headers(cursor):
         data = []
@@ -35,6 +44,8 @@ def add_headers(cursor):
 @app.route("/", methods=['GET', 'POST'])
 def main():
         form = QueryForm()
+        form_register = RegisterForm()
+        
         cursor = mydb.cursor()
         
         if form.submit_buy.data:
@@ -57,6 +68,15 @@ def main():
                 data = add_headers(cursor)
 
                 return render_template("dashboard.html", data=data)
+        
+        elif form.submit_newuser.data:
+            return render_template("register.html", form=form_register)
+            
+        elif form_register.submit_register.data and form.validate_on_submit():
+            request = f"INSERT INTO CLIENTES(usuario, nombre, apellidos, email) \
+                VALUES('{form_register.username.data}', '{form_register.name.data}' , '{form_register.surname.data}' , '{form_register.email.data}')"
+                
+            cursor.execute(request)
         
         return render_template('query.html', title='Consulta compras', form=form)
         

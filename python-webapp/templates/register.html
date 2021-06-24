@@ -1,0 +1,26 @@
+<html>
+<head>
+        <title>Registro de usuarios</title>
+</head>
+<body>
+        <div>
+                {% block content %}
+                <h1>Consulta compras</h1>
+                <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}
+                    {{ form.username(size=20) }}<br>
+                    {{ form.name.label }}
+                    {{ form.name (size=80) }}<br>
+                    {{ form.surname.label }}
+                    {{ form.surname (size=80) }}<br>
+                    {{ form.email.label }}
+                    {{ form.email (size=20) }}<br>
+                </p>
+                <p>{{ form.submit_register() }}</p>
+                </form>
+                {% endblock %}
+        </div>
+</body>
+<html>
