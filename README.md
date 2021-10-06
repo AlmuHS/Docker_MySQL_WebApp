@@ -1,16 +1,12 @@
-# Tarea: Contenedores como Servicio
+# Store WebApp
 
-## Enunciado
+## Introducción
 
-Crea una pequeña aplicación web, usando un tecnología a tu elección, que se conecte a un almacenamiento redis o a una base de datos SQL o noSQL.
+Proyecto de desarrollo de una pequeña aplicación web de compras, desplegada sobre Docker, con conexión a una base de datos MySQL.
 
-Crea un Dockerfile para generar la imagen y súbela al Docker Hub.
+## Implementación
 
-Crea un fichero docker-compose.yml que al menos lance dos servicios: la aplicación y la base de datos, y un volumen para que los datos persistan.
-
-Sube la aplicación, el dockerfile y el docker-compose a un repositorio Github, y publícalo en esta tarea.
-
-## 1. Creación de la aplicación web
+### 1. Creación de la aplicación web
 
 Para la aplicación web, hemos utilizado flask. La aplicación web se conecta a una base de datos MySQL.
 
@@ -30,7 +26,7 @@ La base de datos tiene las siguientes credenciales:
 - **usuario: ** testusr
 - **contraseña root:** testpw
 
-## 2. Dockerfile
+### 2. Dockerfile
 
 Para crear las imágenes de cada contenedor, disponemos de dos Dockerfile
 
@@ -38,19 +34,19 @@ Para crear las imágenes de cada contenedor, disponemos de dos Dockerfile
 
 - En la aplicación web, el [Dockerfile](https://github.com/AlmuHS/Practica_Docker_MySQL/blob/main/python-webapp/Dockerfile) copia el script y el fichero de requisitos a la imagen, instala sus requisitos mediante pip, expone el puerto 80, y lanza el script mediante Python
 
-## 3. Compilación y despliegue manual de las imágenes
+### 3. Compilación y despliegue manual de las imágenes
 
 Con toda esta infraestructura, podemos probar el sistema siguiendo los siguientes pasos
 
-### 3.1. Compilación de las imágenes
+#### 3.1. Compilación de las imágenes
 
-#### Descarga de los datos
+##### Descarga de los datos
 
 Para construir las imágenes, debemos clonar el repositorio y situarnos en el directorio de cada imagen
 
 	git clone https://github.com/AlmuHS/Practica_Docker_MySQL.git
 
-#### Construcción de la imagen de la base de datos
+##### Construcción de la imagen de la base de datos
 
 Nos situamos en el directorio `mariadb` y usamos el comando `docker build` para construir la imagen
 
@@ -59,19 +55,19 @@ Nos situamos en el directorio `mariadb` y usamos el comando `docker build` para 
 
 Esto nos creará una imagen llamada *compras-mariadb*
 
-#### Construcción de la imagen de la aplicación web
+##### Construcción de la imagen de la aplicación web
 
 	cd python-webapp
 	sudo docker build . -t flask-mariadb
 
 Esto nos creará una imagen llamada *flask-mariadb*
 
-### 3.2. Lanzamiento de los contenedores
+#### 3.2. Lanzamiento de los contenedores
 
 Los comandos anteriores generarán las imágenes, que se quedarán almacenadas en Docker.
 Para utilizarlas, debemos lanzar contenedores basados en las mismas.
 
-#### Preparación de la red
+##### Preparación de la red
 
 Para que los contenedores se puedan comunicar entre sí, estos deben estar situados en la misma red. Esto permitirá acceder a los mismos utilizando simplemente el nombre del contenedor al que queramos conectarnos, sin necesidad de conocer su dirección IP.
 
@@ -122,7 +118,7 @@ Pulsamos en "Consultar compras"
 
 Dependiendo del usuario que hayamos elegido, veremos una lista de compras u otra.
 
-## 4. Publicación de las imágenes
+### 4. Publicación de las imágenes
 
 Para subir las imágenes, nos creamos una cuenta en [Docker Hub](https://hub.docker.com/).
 En mi caso, la cuenta es "almuhs".
@@ -214,7 +210,7 @@ Vemos una salida como esta:
 
 La imagen queda publicada en Docker Hub, con el nombre [almuhs/mariadb-compras](https://hub.docker.com/repository/docker/almuhs/mariadb-compras)
 
-## 5. Prueba de las imágenes publicadas
+### 5. Prueba de las imágenes publicadas
 
 Para probar las imágenes publicadas, podemos indicar el nombre de la imagen dentro del comando `docker run`. Esto descargará las imágenes y lanzará los contenedores con la configuración correspondiente
 
